@@ -22,8 +22,8 @@ else:
 __version__ = '1.0.0'
 
 here = path.abspath(path.dirname(__file__))
-# Get the long description from README.md
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+# Get the long description from README_Elliot.md
+with open(path.join(here, 'README_Elliot.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 # get the dependencies and installs
