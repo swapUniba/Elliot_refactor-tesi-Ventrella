@@ -1,0 +1,19 @@
+experiment:
+  dataset: ventrella_experiment
+  data_config:
+      strategy: fixed
+#      train_path: ../data/ventrella_experiment/train2id_movielens.csv
+#      test_path: ../data/ventrella_experiment/test2id_movielens.csv
+      train_path: ../data/ventrella_experiment/train2id_dbbook.csv
+      test_path: ../data/ventrella_experiment/test2id_dbbook.csv
+      dataloader: DataSetLoader
+  top_k: 10  # takes an int representing the list length
+  evaluation:
+    cutoffs: [5, 10]  # maximum length of the recommendation list we want to consider when computing the metric
+    simple_metrics: [Precision,Recall,F1,nDcg,MRR]
+    relevance_threshold: 1  # minimum value of the rating to consider a test transaction relevant for the evaluation process
+  external_models_path: ../external/bypass/__init__.py
+  models:
+    external.Bypass:
+      meta:
+        save_recs: False
