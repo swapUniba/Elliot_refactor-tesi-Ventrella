@@ -19,7 +19,7 @@ from elliot.evaluation.metrics.accuracy.hit_rate import HR
 from elliot.evaluation.metrics.accuracy.mrr import MRR
 from elliot.evaluation.metrics.accuracy.map import MAP
 from elliot.evaluation.metrics.accuracy.mar import MAR
-from elliot.evaluation.metrics.accuracy.f1 import F1, ExtendedF1
+from elliot.evaluation.metrics.accuracy.f1 import F1, ExtendedF1, MavF1
 from elliot.evaluation.metrics.accuracy.DSC import DSC
 from elliot.evaluation.metrics.accuracy.AUC import LAUC, AUC, GAUC
 
@@ -55,6 +55,7 @@ _metric_dictionary = {
     "MAR": MAR,
     "F1": F1,
     "ExtendedF1": ExtendedF1,
+    "MavF1": MavF1,
     "DSC": DSC,
     "LAUC": LAUC,
     "GAUC": GAUC,
