@@ -49,10 +49,14 @@ class TransE_BERT_h1(RecMixin, BaseRecommenderModel):
         return r
 
     def overwrite_train_dict(self):
-        ml = 'data/ventrella_experiment/testing/Movielens/[Hybrid1] TransE + BERT/TransE_lastLayerNoStopw/top_5_predictions_1.tsv'
-        db = 'data/ventrella_experiment/testing/DbBook/[Hybrid1] TransE-TransH + BERT/TransE_lastLayerNoStopw/top_5_predictions_1.tsv'
+        topK = self._config.top_k
+        ml = 'data/ventrella_experiment/testing/Movielens/[Hybrid1] TransE + BERT/TransE_lastLayerNoStopw/top_' + str(topK) + '_predictions_1.tsv'
+        db = 'data/ventrella_experiment/testing/DbBook/[Hybrid1] TransE-TransH + BERT/TransE_lastLayerNoStopw/top_' + str(topK) + '_predictions_1.tsv'
         column_names = ['userId', 'itemId', 'rating', 'timestamp']
-        train_dataframe = pd.read_csv(ml, sep="\t", header=None, names=column_names)
+        if "movielens" in self._config.data_config.test_path:
+            train_dataframe = pd.read_csv(ml, sep="\t", header=None, names=column_names)
+        else:
+            train_dataframe = pd.read_csv(db, sep="\t", header=None, names=column_names)
         users = list(train_dataframe['userId'].unique())
         ratings = {}
         for u in users:

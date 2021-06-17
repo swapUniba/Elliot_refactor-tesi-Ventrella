@@ -2,13 +2,13 @@ experiment:
   dataset: movielens_exp
   data_config:
       strategy: fixed
-#      train_path: ../data/ventrella_experiment/train2id_dbbook.csv
-#      test_path: ../data/ventrella_experiment/test2id_dbbook.csv
-      train_path: ../data/ventrella_experiment/train2id_movielens.csv
-      test_path: ../data/ventrella_experiment/test2id_movielens.csv
+      train_path: ../data/ventrella_experiment/train2id_dbbook.csv
+      test_path: ../data/ventrella_experiment/test2id_dbbook.csv
+#      train_path: ../data/ventrella_experiment/train2id_movielens.csv
+#      test_path: ../data/ventrella_experiment/test2id_movielens.csv
       dataloader: DataSetLoader
 
-  top_k: 5  # takes an int representing the list length
+  top_k: 10  # takes an int representing the list length
   evaluation:
     #cutoffs: [5, 10]  # maximum length of the recommendation list we want to consider when computing the metric
     simple_metrics: [Precision,Recall,MavF1,nDcg,MRR]
