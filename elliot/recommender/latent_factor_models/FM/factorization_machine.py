@@ -15,6 +15,7 @@ import numpy as np
 from tqdm import tqdm
 
 from elliot.dataset.samplers import pointwise_pos_neg_ratings_sampler as pws
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.base_recommender_model import BaseRecommenderModel
 from elliot.recommender.latent_factor_models.FM.factorization_machine_model import FactorizationMachineModel
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -173,7 +174,7 @@ class FM(RecMixin, BaseRecommenderModel):
                                   for u_list in list(zip(i.numpy(), v.numpy()))]
             predictions_top_k.update(dict(zip(map(self._data.private_users.get,
                                                   range(offset, offset_stop)), items_ratings_pair)))
-        return predictions_top_k
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
 
     def restore_weights(self):
         try:
