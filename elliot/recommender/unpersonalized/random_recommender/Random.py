@@ -6,6 +6,7 @@ Tensorflow 2.1.0 implementation of APR.
 
 import numpy as np
 
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.base_recommender_model import BaseRecommenderModel
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from elliot.utils.write import store_recommendation
@@ -61,4 +62,4 @@ class Random(RecMixin, BaseRecommenderModel):
                     j = items[r_int(n_items)]
                 l.append((j, 1))
             r[u] = l
-        return r
+        return test_item_only_filter(r, self._data.test_dict)
