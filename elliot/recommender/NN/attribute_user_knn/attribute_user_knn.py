@@ -77,8 +77,8 @@ class AttributeUserKNN(RecMixin, BaseRecommenderModel):
 
 
     def get_recommendations(self, k: int = 100):
-        predicted_at_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
-        return test_item_only_filter(predicted_at_k, self._data.test_dict)
+        predictions_top_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
 
     @property
     def name(self):
