@@ -1,0 +1,1 @@
+from .CFGAN import CFGAN

@@ -1,40 +1,26 @@
-"""
-Created on April 4, 2020
-Tensorflow 2.1.0 implementation of APR.
-@author Anonymized
-"""
-
-import operator
-
-import numpy as np
+import pandas as pd
 
 from elliot.evaluation.evaluator import Evaluator
 from elliot.recommender.base_recommender_model import BaseRecommenderModel
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from elliot.utils.folder import build_model_folder
-from elliot.utils.write import store_recommendation
-
-np.random.seed(0)
 
 
-class MostPop(RecMixin, BaseRecommenderModel):
+class basic_transE(RecMixin, BaseRecommenderModel):
 
     def __init__(self, data, config, params, *args, **kwargs):
         """
-        Create a Most Popular recommender.
+        Create a Fictional recommender.
         :param data: data loader object
         :param path_output_rec_result: path to the directory rec. results
         :param path_output_rec_weight: path to the directory rec. model parameters
         :param args: parameters
         """
         super().__init__(data, config, params, *args, **kwargs)
+        self._data.train_dict = self.overwrite_train_dict()
         self._num_items = self._data.num_items
         self._num_users = self._data.num_users
-        self._random = np.random
         self.evaluator = Evaluator(self._data, self._params)
-
-        self._pop_items = {self._data.private_items[p]: pop for p, pop in enumerate(self._data.sp_i_train.astype(bool).sum(axis=0).tolist()[0])}
-        self._sorted_pop_items = dict(sorted(self._pop_items.items(), key=operator.itemgetter(1), reverse=True))
 
         self._params.name = self.name
 
@@ -43,37 +29,33 @@ class MostPop(RecMixin, BaseRecommenderModel):
 
     @property
     def name(self):
-        return "MostPop"
+        return "transE"
 
     def train(self):
         recs = self.get_recommendations(self.evaluator.get_needed_recommendations())
         result_dict = self.evaluator.eval(recs)
         self._results.append(result_dict)
 
-        if self._save_recs:
-            store_recommendation(recs, self._config.path_output_rec_result + f"{self.name}.tsv")
-
     def get_recommendations(self, top_k):
-        n_items = self._num_items
-        sorted_pop_items = self._sorted_pop_items
         ratings = self._data.train_dict
-
         r = {}
         for u, i_s in ratings.items():
             l = []
             ui = set(i_s.keys())
 
-            lui = len(ui)
-            if lui+top_k >= n_items:
-                r[u] = l
-                continue
-
-            for item, pop in sorted_pop_items.items():
-                if item in ui:
-                    continue
-                else:
-                    l.append((item, pop))
-                if len(l) >= top_k:
-                    break
+            for item in ui:
+                l.append((item, i_s[item]))
             r[u] = l
         return r
+
+    def overwrite_train_dict(self):
+        ml = 'data/ventrella_experiment/testing/Movielens/[Basic] TransE/TransE_768/top_5_predictions_1.tsv'
+        db = 'data/ventrella_experiment/testing/DbBook/[Basic] TransE-TransH/TransE_768/top_5_predictions_1.tsv'
+        column_names = ['userId', 'itemId', 'rating', 'timestamp']
+        train_dataframe = pd.read_csv(ml, sep="\t", header=None, names=column_names)
+        users = list(train_dataframe['userId'].unique())
+        ratings = {}
+        for u in users:
+            sel_ = train_dataframe[train_dataframe['userId'] == u]
+            ratings[u] = dict(zip(sel_['itemId'], sel_['rating']))
+        return ratings
