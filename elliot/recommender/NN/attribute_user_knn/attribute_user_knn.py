@@ -13,6 +13,7 @@ import time
 import typing as t
 import scipy.sparse as sp
 
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from elliot.utils.write import store_recommendation
 
@@ -76,7 +77,8 @@ class AttributeUserKNN(RecMixin, BaseRecommenderModel):
 
 
     def get_recommendations(self, k: int = 100):
-        return {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        predicted_at_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        return test_item_only_filter(predicted_at_k, self._data.test_dict)
 
     @property
     def name(self):
