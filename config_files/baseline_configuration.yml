@@ -1,5 +1,5 @@
 experiment:
-  dataset: movielens_exp
+  dataset: ventrella_experiment
   data_config:
       strategy: fixed
       train_path: ../data/ventrella_experiment/train2id_dbbook.csv
