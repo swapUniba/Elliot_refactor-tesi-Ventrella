@@ -10,6 +10,7 @@ __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 import numpy as np
 import pickle
 
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from elliot.utils.write import store_recommendation
 
@@ -57,7 +58,8 @@ class PureSVD(RecMixin, BaseRecommenderModel):
         self._model = PureSVDModel(self._factors, self._data, self._seed)
 
     def get_recommendations(self, k: int = 100):
-        return {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        predictions_top_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
 
     def predict(self, u: int, i: int):
         """

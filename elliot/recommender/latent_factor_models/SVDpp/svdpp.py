@@ -11,6 +11,7 @@ import numpy as np
 from tqdm import tqdm
 
 from elliot.dataset.samplers import custom_pointwise_sparse_sampler as cpss
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.base_recommender_model import BaseRecommenderModel
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.latent_factor_models.SVDpp.svdpp_model import SVDppModel
@@ -127,4 +128,4 @@ class SVDpp(RecMixin, BaseRecommenderModel):
                                   for u_list in list(zip(i.numpy(), v.numpy()))]
             predictions_top_k.update(dict(zip(map(self._data.private_users.get,
                                                   range(offset, offset_stop)), items_ratings_pair)))
-        return predictions_top_k
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)

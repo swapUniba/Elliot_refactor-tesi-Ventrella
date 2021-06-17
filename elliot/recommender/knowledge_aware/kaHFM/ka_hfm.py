@@ -5,6 +5,7 @@ import typing as t
 
 
 from elliot.dataset.samplers import pairwise_sampler as ps
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.base_recommender_model import BaseRecommenderModel
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from elliot.utils.write import store_recommendation
@@ -233,7 +234,8 @@ class KaHFM(RecMixin, BaseRecommenderModel):
         self._sampler = ps.Sampler(self._ratings, self._data.users, self._data.items)
 
     def get_recommendations(self, k: int = 100):
-        return {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        predictions_top_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
 
     def predict(self, u: int, i: int):
         """

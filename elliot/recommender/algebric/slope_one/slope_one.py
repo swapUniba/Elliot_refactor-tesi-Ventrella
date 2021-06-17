@@ -13,6 +13,7 @@ import pickle
 
 import numpy as np
 
+from elliot.recommender import test_item_only_filter
 from elliot.recommender.algebric.slope_one.slope_one_model import SlopeOneModel
 from elliot.recommender.base_recommender_model import BaseRecommenderModel, init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -50,7 +51,8 @@ class SlopeOne(RecMixin, BaseRecommenderModel):
         self._model = SlopeOneModel(self._data)
 
     def get_recommendations(self, k: int = 100):
-        return {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        predictions_top_k = {u: self._model.get_user_recs(u, k) for u in self._ratings.keys()}
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
 
     @property
     def name(self):

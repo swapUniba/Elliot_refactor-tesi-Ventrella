@@ -11,7 +11,7 @@ import numpy as np
 from tqdm import tqdm
 
 from elliot.dataset.samplers import pointwise_cfgan_sampler as pwcfgans
-from elliot.recommender import BaseRecommenderModel
+from elliot.recommender import BaseRecommenderModel, test_item_only_filter
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.gan.CFGAN.cfgan_model import CFGAN_model
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -161,4 +161,4 @@ class CFGAN(RecMixin, BaseRecommenderModel):
             items_ratings_pair = [list(zip(map(self._data.private_items.get, u_list[0]), u_list[1]))
                                   for u_list in list(zip(i.numpy(), v.numpy()))]
             predictions_top_k.update(dict(zip(range(offset, offset_stop), items_ratings_pair)))
-        return predictions_top_k
+        return test_item_only_filter(predictions_top_k, self._data.test_dict)
